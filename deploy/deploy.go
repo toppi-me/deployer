@@ -32,7 +32,7 @@ func GetDeployer() *Deployer {
 			config: func() Configs {
 				var configs Configs
 
-				err := reader.ReadJsonFromFile("config.json", configs)
+				err := reader.ReadJsonFromFile("config.json", &configs)
 				if err != nil {
 					log.Error().Err(err).Send()
 					return nil
