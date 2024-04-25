@@ -98,22 +98,24 @@ func (d *Deployer) BuildForRepo(repository, branch string) (error, [][]byte) {
 		if out == nil {
 			return err, nil
 		}
-		outs = append(outs, out)
 		return err, outs
 	}
 
 	{
 		err, out := gitFetchAll(ctx, branchDirectory)
+		outs = append(outs, out)
 		if err != nil {
 			return errHandleFn(err, out)
 		}
 
 		err, out = gitResetToOrigin(ctx, branchDirectory, branch)
+		outs = append(outs, out)
 		if err != nil {
 			return errHandleFn(err, out)
 		}
 
 		err, out = makeBuild(ctx, branchDirectory)
+		outs = append(outs, out)
 		if err != nil {
 			return errHandleFn(err, out)
 		}
