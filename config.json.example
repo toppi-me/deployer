@@ -1,0 +1,11 @@
+{
+  "frontend": {
+    "main": "../frontend",
+    "develop": "../frontend-dev"
+  },
+  "backend": {
+    "master": "../backend",
+    "dev": "../backend-dev",
+    "stage": "../backend-stg"
+  }
+}
