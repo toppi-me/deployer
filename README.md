@@ -28,10 +28,10 @@ Auto deploy with GitHub webhook
 
 1. Clone this repository `git clone https://github.com/toppi-me/deployer.git`
 2. Create .env file `cp .env.example .env`
-3. Create .env file `cp .config.json.example .config.json`
+3. Create config file `cp .config.json.example .config.json`
 4. Setup `.env` and `config.json` files with your data
 5. Run `go mod download` and `go build .`
-6. Run `chmod +x my-api-service`
+6. Run `chmod +x deployer`
 
 ## Create systemd
 
