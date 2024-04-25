@@ -46,7 +46,8 @@ After=network.target
 [Service]
 User=root
 Group=root
-ExecStart=/home/root/deployer/deployer
+WorkingDirectory=/root/toppi-me/deployer
+ExecStart=/root/toppi-me/deployer/deployer
 Restart=always
 
 [Install]
