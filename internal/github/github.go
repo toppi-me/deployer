@@ -40,9 +40,14 @@ func ProcessPushEvent(r *http.Request) (bool, *PushEvent) {
 
 	log.Info().Str("event", event).Str("repository", *pushEventFull.Repo.Name).Send()
 
+	// example of branch name: refs/heads/..., refs/remotes/...
 	branchArr := strings.Split(*pushEventFull.Ref, "/")
-	branchName := branchArr[len(branchArr)-1]
+	if len(branchArr) < 3 {
+		log.Error().Str("ref", *pushEventFull.Ref).Msg("ref not parsed")
+		return false, nil
+	}
 
+	branchName := strings.Join(branchArr[2:], "/")
 	if len(branchName) == 0 {
 		log.Error().Str("repository", *pushEventFull.Repo.Name).Str("ref", *pushEventFull.Ref).Msg("branch not parsed")
 		return false, nil
