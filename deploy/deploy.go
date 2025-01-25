@@ -10,12 +10,12 @@ import (
 )
 
 var deployer *Deployer
-var deployerMu sync.Mutex
+var deployerMu = &sync.Mutex{}
 
 type Deployer struct {
 	config  Configs
 	queue   map[string]*Queue // key: repository name + branch name
-	queueMu sync.Mutex
+	queueMu *sync.Mutex
 }
 
 // GetDeployer singleton deployer service getter
@@ -41,7 +41,7 @@ func GetDeployer() *Deployer {
 				return configs
 			}(),
 			queue:   make(map[string]*Queue),
-			queueMu: sync.Mutex{},
+			queueMu: &sync.Mutex{},
 		}
 	}
 
@@ -83,12 +83,21 @@ func (d *Deployer) BuildForRepo(repository, branch string) (error, [][]byte) {
 			query.ContextCancelFunc()
 		}
 
-		d.queue[queueKey] = &Queue{
-			Context:           ctx,
-			ContextCancelFunc: ctxCancelFunc,
+		if !ok {
+			d.queue[queueKey] = &Queue{
+				QueueMutex: &sync.Mutex{},
+			}
+			query = d.queue[queueKey]
 		}
 
+		query.Context = ctx
+		query.ContextCancelFunc = ctxCancelFunc
+
 		d.queueMu.Unlock()
+
+		// need for wait prev build
+		query.QueueMutex.Lock()
+		defer query.QueueMutex.Unlock()
 	}
 
 	// outs is array of out logs for fetch, reset, make stdout
